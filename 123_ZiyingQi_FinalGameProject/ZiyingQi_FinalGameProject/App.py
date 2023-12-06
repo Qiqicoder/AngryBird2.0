@@ -9,13 +9,30 @@ import random
 def onAppStart(app):
 #________startScreen____________________________________________________________
     #button#
-    app.startButtList = [Button(400,300,20,gameScreen, "", 'StartGame',align = "center"),
-                    Button(400,400,20,helpMenuButtonFunction, "", 'HelpMenu',align = "center")]
+    app.startButtList = [Button(400,300,150,30,gameScreen, "", 'StartGame',align = "center"),
+                    Button(400,400,150,30,helpMenuButtonFunction, "", 'HelpMenu',align = "center"),
+                    Button(220,195,50,30,helpMenuButtonFunction, "", '',align = "center")]
     app.textVisible = False
     #background_StartImage#
     app.startImage = Image.open("images/startScreenBackground.jpg")
     app.startImageWidth, app.startImageHeight = app.startImage.width, app.startImage.height
     app.startImage = CMUImage(app.startImage)
+    app.buttonDecorationImage1 = Image.open("images/startGameButton.png")
+    app.buttonDecorationImageWidth, app.buttonDecorationImageHeight = app.buttonDecorationImage1.width, app.buttonDecorationImage1.height
+    app.buttonDecorationImage1 = CMUImage(app.buttonDecorationImage1)
+    app.buttonDecorationImage2 = Image.open("images/HelpMenuButton.png")
+    app.buttonDecorationImageWidth, app.buttonDecorationImageHeight = app.buttonDecorationImage2.width, app.buttonDecorationImage2.height
+    app.buttonDecorationImage2 = CMUImage(app.buttonDecorationImage2)
+    app.helpMenuBackground = Image.open("images/HelpMenuBackground.png")
+    app.helpMenuBackgroundeWidth, app.helpMenuBackgroundHeight = app.helpMenuBackground.width, app.helpMenuBackground.height
+    app.helpMenuBackground = CMUImage(app.helpMenuBackground)
+    #background_GameImage#
+    app.buttonDecorationImage3 = Image.open("images/PauseButton.png")
+    app.buttonDecorationImageWidth, app.buttonDecorationImageHeight = app.buttonDecorationImage3.width, app.buttonDecorationImage3.height
+    app.buttonDecorationImage3 = CMUImage(app.buttonDecorationImage3)
+    app.pauseMenuBackground = Image.open("images/PauseMenuBackground.png")
+    app.pauseMenuBackgroundeWidth, app.pauseMenuBackgroundHeight = app.pauseMenuBackground.width, app.pauseMenuBackground.height
+    app.pauseMenuBackground = CMUImage(app.pauseMenuBackground)
     #titleImage#
     app.gameNameImage = Image.open("images/gameName.png")
     app.gameNameImageWidth,app.gameNameImageHeight = app.gameNameImage.width,app.gameNameImage.height
@@ -112,7 +129,7 @@ def onAppStart(app):
     # app.characterDoorList = [app.fireboyDoor, app.watergirlDoor]
     #button#
     app.pause = False #it should stop the character moving.
-    app.gameButtList = [Button(750,20,20,pauseButtonFunction, "blue", 'PAUSE')]
+    app.gameButtList = [Button(720,20,140,25,pauseButtonFunction, "blue", 'PAUSE')]
 #_______________StartScreen_____________________________________________________
 def start_onStep(app):
     app.stepCounter += 1
@@ -133,9 +150,13 @@ def start_redrawAll(app):
     # drawLabel('Fireboy and Watergirl',400,50,size=50,bold=True, align = 'center')
     for butt in app.startButtList:
         butt.draw()
+    newdecorateWidth, newdecorateHeight = (app.buttonDecorationImageWidth/2.5, app.buttonDecorationImageHeight/2.5)
+    drawImage(app.buttonDecorationImage1, 400,300,width = newdecorateWidth, height = newdecorateHeight, opacity=100,align = "center" )
+    drawImage(app.buttonDecorationImage2, 400,400,width = newdecorateWidth, height = newdecorateHeight, opacity=100,align = "center" )
     if app.textVisible:
-        drawLabel("helpMenuButtonbalabala", app.width//2, app.height//2, 
+        drawLabel("helpMenuButton", app.width//2, app.height//2, 
                   fill = "black", align = "center")
+        drawImage(app.helpMenuBackground, 400,300,width = app.width/1.5, height = app.height/1.5, opacity=100, align = "center")
     spriteW = app.spritesW[app.spriteCounter]
     drawImage(spriteW,150, 400, align = 'center')
     
@@ -151,6 +172,7 @@ def next_onKeyPress(app,key):
     if key == 'p':
         setActiveScreen("start")
 def next_redrawAll(app):
+    #background#
     newWidth, newHeight = (app.gameImageWidth,app.gameImageHeight)
     drawImage(app.gameImage,0,0,width=newWidth,height=newHeight,opacity=100)
     drawLabel("Fireboy&Watergirl", 120, 30, size=16)
@@ -170,13 +192,19 @@ def next_redrawAll(app):
     #button#
     for butt in app.gameButtList:
         butt.draw()
+    newdecorateWidth, newdecorateHeight = (app.buttonDecorationImageWidth/4, 
+                                           app.buttonDecorationImageHeight/4)
+    drawImage(app.buttonDecorationImage3, 650,8,width = newdecorateWidth, 
+              height = newdecorateHeight, opacity=100)
     if app.pause:
-        drawRect(400,250,app.width-100, app.height//2, 
-                  fill = "grey", align = "center")
-        drawLabel("PAUSED", app.width//2, app.height//2-80, 
-                  fill = "black", align = "center",size = 50)
+        drawImage(app.pauseMenuBackground, 400,250,width = app.width/1.2, 
+                   height = app.height/1.2, opacity=100, align = "center")
+        # drawLabel("PAUSED", app.width//2, app.height//2-80, 
+        #           fill = "black", align = "center",size = 50)
         drawLabel("END", app.width//2-200, app.height//2, 
                   fill = "black", align = "center",size = 40)
+        if app.end:
+            drawLabel()
         drawLabel("RETRY", app.width//2+170, app.height//2, 
                   fill = "black", align = "center",size = 40)
         drawLabel("BACK", app.width//2, app.height//2+80, 
