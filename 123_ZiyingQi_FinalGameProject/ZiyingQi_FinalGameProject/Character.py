@@ -46,7 +46,7 @@ class Character:
 
     def accelerateTowardsPoint(self):
     # Accelerate (change velocity) towards point
-        gravity = 0.98
+        gravity = 2
         self.accelerate(gravity)
 
     def drawCharacter(self):

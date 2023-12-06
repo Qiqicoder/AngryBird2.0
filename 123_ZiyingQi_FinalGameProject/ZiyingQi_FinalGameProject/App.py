@@ -3,9 +3,9 @@ from cmu_graphics import *
 from PIL import Image
 import os, pathlib
 from Character import Character
-from Obstacles import Obstacles, GameClearDoor, gameClearFunction
+from Obstacles import Obstacles, GameClearDoor, Mechworks, gameClearFunction, MechworksOnFunction
 from Button import Button, helpMenuButtonFunction, gameScreen, pauseButtonFunction
-
+import random
 def onAppStart(app):
 #________startScreen____________________________________________________________
     #button#
@@ -43,13 +43,13 @@ def onAppStart(app):
     app.gameImageWidth,app.gameImageHeight = app.width,app.height
     app.gameImage = CMUImage(app.gameImage)
     #characterImage#
-    app.fireboy = Character('images/fireboyStandingSingle.png', 50, 450, 0.5)
+    app.fireboy = Character('images/fireboyStandingSingle.png', 30, 490, 0.4)
     # app.fireboyList = []
     # for i in range(14):
     #     framefireboy = spritesfireboy.crop((100*i, 0, 100+100*i, 140))
     #     fireboytype = CMUImage(framefireboy)
     #     app.fireboyList.append(fireboytype)
-    app.watergirl = Character('images/watergirlStandingSingle.png', 700, 400, 0.5)
+    app.watergirl = Character('images/watergirlStandingSingle.png', 730, 490, 0.4)
     # app.watergirlList = []
     # for i in range(14):
     #     framewatergirl = spriteswatergirl.crop((100*i, 0, 100+100*i, 140))
@@ -58,24 +58,58 @@ def onAppStart(app):
     app.characterList = [app.fireboy, app.watergirl]
     app.move = 5
     #obstacle#
+    #layer1#
+    #The position of the two doors is fixed: (200, 100) and(500, 100)#
+    #layer2#
+    app.obstacleLayer2x1 = random.choice([100,300])
+    app.obstacleLayer2x2 = random.choice([400,600])
+    #layer3#
+    app.obstacleLayer3x1 = random.choice([0,200]) or random.choice([200,400])
+    app.obstacleLayer3x2 = random.choice([300,500]) or random.choice([500,700])
+    #layer4#
+    app.obstacleLayer4x1 = random.choice([100]) or random.choice([100,300]) or random.choice([300,500])
+    app.obstacleLayer4x2 = random.choice([200,400]) or random.choice([400,600]) or random.choice([600])
+    #random#
+    app.obstaclex1 = random.choice([20, 100, 200, 300, 400, 500, 600])
+    app.obstacley1 = random.choice([100, 200, 300, 400])
+    app.obstaclex2 = random.choice([20, 100, 200, 300, 400, 500, 600])
+    app.obstacley2 = random.choice([100, 200, 300, 400])
+    app.obstaclex3 = random.choice([20, 100, 200, 300, 400, 500, 600])
+    app.obstacley3 = random.choice([100, 200, 300, 400])
+    app.obstaclex4 = random.choice([20, 100, 200, 300, 400, 500, 600])
+    app.obstacley4 = random.choice([100, 200, 300, 400])
     app.obstacleList = [
         Obstacles(0, 480, 800, 20),
         Obstacles(0, 0, 800, 20),
         Obstacles(0, 0, 20, 500),
         Obstacles(780, 0, 20, 500),
-
-        Obstacles(0, 400, 150, 20),
-        Obstacles(650, 400, 150, 20),
-        Obstacles(200, 300, 500, 20),
-        Obstacles(600, 200, 200, 20),
+        Obstacles(700, 400, 200, 20),
         Obstacles(200, 100, 100, 20),
-        Obstacles(600, 100, 100, 20),
+        Obstacles(500, 100, 100, 20),
+        Obstacles(app.obstacleLayer2x1, 200, 100, 20),
+        Obstacles(app.obstacleLayer2x2, 200, 100, 20),
+        Obstacles(app.obstacleLayer3x1, 300, 100, 20),
+        Obstacles(app.obstacleLayer3x2, 300, 100, 20),
+        Obstacles(app.obstacleLayer4x1, 400, 100, 20),
+        Obstacles(app.obstacleLayer4x2, 400, 100, 20),
+        Obstacles(app.obstaclex1, app.obstacley1, 100, 20),
+        Obstacles(app.obstaclex2, app.obstacley2, 100, 20),
+        Obstacles(app.obstaclex3, app.obstacley3, 100, 20),
+        Obstacles(app.obstaclex4, app.obstacley4, 100, 20),
     ]
-    #hoorimage#
+    app.barrierList = [Obstacles(700,400,20,100)]
+    #doorimage#
     app.gameClearVisible = False
     app.fireboyDoor = GameClearDoor('images/fireboyDoor.png', 220, 40, gameClearFunction,0.5)
-    app.watergirlDoor = GameClearDoor('images/watergirlDoor.png', 620, 40, gameClearFunction, 0.5)
+    app.watergirlDoor = GameClearDoor('images/watergirlDoor.png', 520, 40, gameClearFunction, 0.5)
     app.characterDoorList = [app.fireboyDoor, app.watergirlDoor]
+    #machworksimage#
+    app.MechworksOn = False
+    app.machworksx = random.choice([100, 200, 300, 400, 500, 600])
+    app.machworksy = random.choice([120, 220, 320, 420])
+    app.machworks = Mechworks('images/MechworksOff.png', app.machworksx, app.machworksy, MechworksOnFunction,0.5)
+    # app.watergirlDoor = GameClearDoor('images/watergirlDoor.png', 620, 40, gameClearFunction, 0.5)
+    # app.characterDoorList = [app.fireboyDoor, app.watergirlDoor]
     #button#
     app.pause = False #it should stop the character moving.
     app.gameButtList = [Button(750,20,20,pauseButtonFunction, "blue", 'PAUSE')]
@@ -128,6 +162,8 @@ def next_redrawAll(app):
     #Door#
     app.fireboyDoor.drawDoor()
     app.watergirlDoor.drawDoor()
+    #Machworks#
+    app.machworks.drawMechworks()
     #character#
     app.fireboy.drawCharacter()
     app.watergirl.drawCharacter()
@@ -145,15 +181,19 @@ def next_redrawAll(app):
                   fill = "black", align = "center",size = 40)
         drawLabel("BACK", app.width//2, app.height//2+80, 
                   fill = "black", align = "center",size = 40)
-    # sprite = app.sprites[app.spriteCounter]
-    # drawImage(sprite,200, 200)
+
     #Door_checkForWin#
-    # if app.fireboyDoor.checkForWin(app, app.fireboy) and app.watergirlDoor.checkForWin(app, app.watergirl):
-    #     pass
     if app.gameClearVisible:    
         drawLabel("You win the game", app.width//2, app.height//2, 
                 fill = "red", align = "center", size = 40)
-
+    #Machworks_checkForMachworksOn#
+    if not app.MechworksOn:
+        drawLabel("Touch Machwork and save Watergirl!", 200, 450, size=16)
+        # app.machworks = Mechworks('images/MechworksOn.png', app.machworksx, app.machworksy, MechworksOnFunction,0.5)
+        for barrier in app.barrierList:
+            barrier.drawObstacles()
+    else:
+        drawLabel("Cooperate with each other to reach the door!", 200, 450, size=16)
 def next_onMousePress(app, mouseX, mouseY):
     for butt in app.gameButtList:
         if butt.checkForPress(app, mouseX, mouseY):
@@ -173,15 +213,15 @@ def next_defKeyHold(app, character, keys, left, right):
             character.x = app.width - character.imageWidth
 
 def next_onKeyPress(app, keys):
-    if 'up' in keys and not app.fireboy.drop:
+    if 'up' in keys and not app.watergirl.drop:
         print("upin")
         app.fireboy.jumping()
-    if 'w' in keys and not app.watergirl.drop:
-        app.watergirl.jumping()
+    if 'w' in keys and not app.fireboy.drop:
+        app.fireboy.jumping()
 
 def next_onKeyHold(app, keys):
-    next_defKeyHold(app, app.fireboy, keys, 'left', 'right')
-    next_defKeyHold(app, app.watergirl, keys, 'a', 'd')
+    next_defKeyHold(app, app.watergirl, keys, 'left', 'right')
+    next_defKeyHold(app, app.fireboy, keys, 'a', 'd')
 
 def next_onStep(app): 
     #character&obstacle_collision#
@@ -209,6 +249,14 @@ def next_onStep(app):
     if app.characterList[0].win and app.characterList[1].win:
         app.gameClearVisible = True
 
+    #CheckforMechworksOn#
+    # print(app.fireboy.x + app.fireboy.imageWidth - 15, app.machworks.x + 40, app.fireboy.x + app.fireboy.imageWidth + 15)
+    # print(app.machworks.y, app.fireboy.y + app.fireboy.imageHeight - 30, app.machworks.y + app.machworks.imageHeight)
+    if (app.fireboy.x + app.fireboy.imageWidth - 15 < app.machworks.x + 40 < app.fireboy.x + app.fireboy.imageWidth + 15 and
+    app.machworks.y < app.fireboy.y + app.fireboy.imageHeight - 30 < app.machworks.y + app.machworks.imageHeight):
+        app.MechworksOn = True
+        # print('touch')
+
 def characterJump(app, character):
     if character.y <= app.height - character.imageHeight:
         character.takeStep()
@@ -222,7 +270,11 @@ def characterDrop(app, character):
         if character.x + character.imageHeight/2 < left or character.x + character.imageHeight/2 > right:
             character.drop = True
 
-
+    # if app.MechworksOn:
+    #     app.watergirl.move = 0
+    #     # app.machworks = Mechworks('images/MechworksOn.png', app.machworksx, app.machworksy, MechworksOnFunction,0.5)
+    # else:
+    #     app.watergirl.move = 5
 def main():
     runAppWithScreens("start",width=800,height=500)
 
